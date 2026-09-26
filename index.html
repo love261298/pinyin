@@ -28,7 +28,7 @@
         </h1>
 
         <p class="text-gray-500 mt-2">
-          Chọn chế độ ôn tập và nhấn nút để tạo ngẫu nhiên
+          Chọn chế độ ôn tập, nhấn danh sách hoặc nhấn nút ngẫu nhiên
         </p>
       </div>
 
@@ -36,21 +36,25 @@
       <div class="mb-6">
         <label class="block text-sm font-semibold text-gray-700 mb-2 text-center">Chế độ ôn tập:</label>
         <div class="grid grid-cols-3 gap-2 p-1 bg-gray-100 rounded-xl">
-          <button id="modeThanhMau" onclick="changeMode('thanhMau')" class="py-2 px-3 rounded-lg text-sm font-bold transition-all bg-indigo-600 text-white shadow">
+          <button id="modeThanhMau" onclick="changeMode('thanhMau')"
+            class="py-2 px-3 rounded-lg text-sm font-bold transition-all bg-indigo-600 text-white shadow">
             Thanh Mẫu
           </button>
-          <button id="modeVanMau" onclick="changeMode('vanMau')" class="py-2 px-3 rounded-lg text-sm font-bold transition-all text-gray-600 hover:text-indigo-600">
+          <button id="modeVanMau" onclick="changeMode('vanMau')"
+            class="py-2 px-3 rounded-lg text-sm font-bold transition-all text-gray-600 hover:text-indigo-600">
             Vận Mẫu
           </button>
-          <button id="modeAll" onclick="changeMode('all')" class="py-2 px-3 rounded-lg text-sm font-bold transition-all text-gray-600 hover:text-indigo-600">
+          <button id="modeAll" onclick="changeMode('all')"
+            class="py-2 px-3 rounded-lg text-sm font-bold transition-all text-gray-600 hover:text-indigo-600">
             Tất Cả
           </button>
         </div>
       </div>
 
       <!-- Result Card -->
-      <div class="relative bg-indigo-50 border-4 border-indigo-500 rounded-2xl mb-6 p-4 flex flex-col items-center justify-center min-h-[8.5rem] transition-all duration-200">
-        
+      <div
+        class="relative bg-indigo-50 border-4 border-indigo-500 rounded-2xl mb-6 p-4 flex flex-col items-center justify-center min-h-[8.5rem] transition-all duration-200">
+
         <!-- Pinyin Display & Eye Icon -->
         <div class="flex items-center justify-center gap-4">
           <span id="result" class="text-5xl font-extrabold text-indigo-600 transition-all duration-200">
@@ -58,16 +62,21 @@
           </span>
 
           <!-- Eye Icon Button (Chỉ toggle cách đọc) -->
-          <button id="togglePronunciationBtn" onclick="togglePronunciation()" title="Xem cách đọc" class="text-2xl text-indigo-400 hover:text-indigo-600 transition-colors focus:outline-none p-2">
+          <button id="togglePronunciationBtn" onclick="togglePronunciation()" title="Xem cách đọc"
+            class="text-2xl text-indigo-400 hover:text-indigo-600 transition-colors focus:outline-none p-2">
             <i id="eyeIcon" class="fa-solid fa-eye"></i>
           </button>
         </div>
 
         <!-- Standalone Info (Luôn hiển thị khi có dữ liệu) -->
-        <div id="standaloneText" class="mt-2 text-sm font-medium text-indigo-800 bg-indigo-100/90 px-3 py-1 rounded-full shadow-sm hidden"></div>
+        <div id="standaloneText"
+          class="mt-2 text-sm font-medium text-indigo-800 bg-indigo-100/90 px-3 py-1 rounded-full shadow-sm hidden">
+        </div>
 
         <!-- Pronunciation Text (Chỉ bật/tắt khi nhấn icon con mắt) -->
-        <div id="pronunciationText" class="mt-2 text-base font-semibold text-purple-700 bg-white/90 px-3 py-1 rounded-full shadow-sm hidden"></div>
+        <div id="pronunciationText"
+          class="mt-2 text-base font-semibold text-purple-700 bg-white/90 px-3 py-1 rounded-full shadow-sm hidden">
+        </div>
 
       </div>
 
@@ -231,7 +240,7 @@
     }
 
     // ==============================
-    // HIỂN THỊ DANH SÁCH
+    // HIỂN THỊ DANH SÁCH & CHỌN MỤC
     // ==============================
     function renderList() {
       nameList.innerHTML = "";
@@ -239,22 +248,46 @@
 
       activeList.forEach((itemText) => {
         const item = document.createElement("div");
+
+        const isSelected = selectedItemKey === itemText;
+
         item.className = `
           p-2
-          bg-gray-50
-          border border-gray-100
           rounded-lg
-          text-gray-700
           font-medium
           text-center
-          hover:bg-indigo-100
-          hover:text-indigo-600
-          transition
+          transition-all
+          duration-150
           text-sm
+          cursor-pointer
+          select-none
+          ${isSelected
+            ? 'bg-indigo-600 text-white font-bold shadow-md scale-105'
+            : 'bg-gray-50 border border-gray-100 text-gray-700 hover:bg-indigo-100 hover:text-indigo-600 hover:scale-105'}
         `;
         item.textContent = itemText;
+
+        // Sự kiện click chọn từ trong danh sách
+        item.onclick = () => selectItem(itemText);
+
         nameList.appendChild(item);
       });
+    }
+
+    // Chọn từ trực tiếp từ danh sách hoặc nút random
+    function selectItem(itemText) {
+      selectedItemKey = itemText;
+      result.textContent = selectedItemKey;
+
+      hidePronunciation();
+      updateStandaloneDisplay();
+      renderList(); // Re-render để cập nhật trạng thái highlight
+
+      // Hiệu ứng nảy kết quả
+      result.classList.add("scale-110");
+      setTimeout(() => {
+        result.classList.remove("scale-110");
+      }, 150);
     }
 
     // ==============================
@@ -266,20 +299,8 @@
         return;
       }
 
-      hidePronunciation();
-
       const randomIndex = Math.floor(Math.random() * activeList.length);
-      selectedItemKey = activeList[randomIndex];
-
-      result.textContent = selectedItemKey;
-
-      // Cập nhật thông tin đứng độc lập ngay lập tức
-      updateStandaloneDisplay();
-
-      result.classList.add("scale-110");
-      setTimeout(() => {
-        result.classList.remove("scale-110");
-      }, 150);
+      selectItem(activeList[randomIndex]);
     }
 
     // Hiển thị thông tin Standalone luôn luôn khi có dữ liệu
@@ -316,7 +337,7 @@
 
     function showPronunciation() {
       if (!selectedItemKey) return;
-      
+
       const itemData = thanhMauData[selectedItemKey] || vanMauData[selectedItemKey];
 
       if (itemData && itemData.read) {
@@ -330,7 +351,7 @@
     function hidePronunciation() {
       pronunciationText.classList.add("hidden");
       pronunciationText.textContent = "";
-      
+
       eyeIcon.className = "fa-solid fa-eye";
       isPronunciationVisible = false;
     }
