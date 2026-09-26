@@ -111,27 +111,39 @@
     // DANH SÁCH DỮ LIỆU & QUY TẮC
     // ==============================
     const thanhMauData = {
-      "b": { read: "pua" },
+      // Âm môi
+      "b": { read: "pua (không bật hơi)" },
       "p": { read: "pua (bật hơi)" },
       "m": { read: "mua" },
       "f": { read: "phua" },
-      "d": { read: "tưa" },
-      "t": { read: "thưa" },
+
+      // Âm đầu lưỡi
+      "d": { read: "tưa (không bật hơi)" },
+      "t": { read: "thưa (bật hơi)" },
       "n": { read: "nưa" },
       "l": { read: "lưa" },
-      "g": { read: "cưa" },
-      "k": { read: "khưa" },
+
+      // Âm gốc lưỡi
+      "g": { read: "cưa (không bật hơi)" },
+      "k": { read: "khưa (bật hơi)" },
       "h": { read: "hưa" },
-      "j": { read: "chi (lưỡi chạm răng chân răng dưới)" },
-      "q": { read: "chi (lưỡi chạm răng chân răng dưới, bật hơi)" },
-      "x": { read: "si (lưỡi chạm răng chân răng dưới)" },
-      "zh": { read: "trư (uốn lưỡi)" },
-      "ch": { read: "chư (uốn lưỡi, bật hơi)" },
+
+      // j q x — lưỡi trước, KHÔNG cuộn lưỡi
+      "j": { read: "chi (lưỡi áp sát chân răng dưới, không bật hơi)" },
+      "q": { read: "chi (lưỡi áp sát chân răng dưới, bật hơi)" },
+      "x": { read: "xi (lưỡi áp sát chân răng dưới)" },
+
+      // zh ch sh r — uốn/cuộn lưỡi
+      "zh": { read: "trư (uốn lưỡi, không bật hơi)" },
+      "ch": { read: "trư (uốn lưỡi, bật hơi)" },
       "sh": { read: "sư (uốn lưỡi)" },
-      "r": { read: "rư (lưỡi chạm răng khe răng trên dưới, mồm kéo dài)" },
-      "z": { read: "trư (lưỡi chạm răng khe răng trên dưới, mồm kéo dài)" },
-      "c": { read: "trư (lưỡi chạm răng khe răng trên dưới, mồm kéo dài, bật hơi)" },
-      "s": { read: "sư (lưỡi chạm răng khe răng trên dưới, mồm kéo dài)" },
+      "r": { read: "rư (uốn lưỡi, âm xát, kéo dài)" },
+
+      // z c s — lưỡi trước, KHÔNG uốn lưỡi
+      "z": { read: "dzư (đầu lưỡi sát chân răng trên, không bật hơi)" },
+      "c": { read: "tsư (đầu lưỡi sát chân răng trên, bật hơi)" },
+      "s": { read: "sư (đầu lưỡi sát chân răng trên)" },
+      // Bán nguyên âm
       "y": { read: "i" },
       "w": { read: "u" }
     };
