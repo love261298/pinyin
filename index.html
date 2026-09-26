@@ -9,6 +9,9 @@
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body class="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center py-4">
@@ -45,12 +48,27 @@
         </div>
       </div>
 
-      <!-- Result -->
-      <div id="result" class="h-24 flex items-center justify-center
-               bg-indigo-50 border-4 border-indigo-500
-               rounded-2xl mb-6
-               text-5xl font-extrabold text-indigo-600 transition-all duration-200">
-        ?
+      <!-- Result Card -->
+      <div class="relative bg-indigo-50 border-4 border-indigo-500 rounded-2xl mb-6 p-4 flex flex-col items-center justify-center min-h-[8.5rem] transition-all duration-200">
+        
+        <!-- Pinyin Display & Eye Icon -->
+        <div class="flex items-center justify-center gap-4">
+          <span id="result" class="text-5xl font-extrabold text-indigo-600 transition-all duration-200">
+            ?
+          </span>
+
+          <!-- Eye Icon Button (Chỉ toggle cách đọc) -->
+          <button id="togglePronunciationBtn" onclick="togglePronunciation()" title="Xem cách đọc" class="text-2xl text-indigo-400 hover:text-indigo-600 transition-colors focus:outline-none p-2">
+            <i id="eyeIcon" class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+
+        <!-- Standalone Info (Luôn hiển thị khi có dữ liệu) -->
+        <div id="standaloneText" class="mt-2 text-sm font-medium text-indigo-800 bg-indigo-100/90 px-3 py-1 rounded-full shadow-sm hidden"></div>
+
+        <!-- Pronunciation Text (Chỉ bật/tắt khi nhấn icon con mắt) -->
+        <div id="pronunciationText" class="mt-2 text-base font-semibold text-purple-700 bg-white/90 px-3 py-1 rounded-full shadow-sm hidden"></div>
+
       </div>
 
       <!-- Button -->
@@ -81,39 +99,87 @@
 
   <script>
     // ==============================
-    // DANH SÁCH DỮ LIỆU
+    // DANH SÁCH DỮ LIỆU & QUY TẮC
     // ==============================
-    const thanhMau = [
-      "b", "p", "m", "f",
-      "d", "t", "n", "l",
-      "g", "k", "h",
-      "j", "q", "x",
-      "zh", "ch", "sh", "r",
-      "z", "c", "s",
-      "y", "w"
-    ];
+    const thanhMauData = {
+      "b": { read: "pua" },
+      "p": { read: "pua (bật hơi)" },
+      "m": { read: "mua" },
+      "f": { read: "phua" },
+      "d": { read: "tưa" },
+      "t": { read: "thưa" },
+      "n": { read: "nưa" },
+      "l": { read: "lưa" },
+      "g": { read: "cưa" },
+      "k": { read: "khưa" },
+      "h": { read: "hưa" },
+      "j": { read: "chi (lưỡi chạm răng chân răng dưới)" },
+      "q": { read: "chi (lưỡi chạm răng chân răng dưới, bật hơi)" },
+      "x": { read: "si (lưỡi chạm răng chân răng dưới)" },
+      "zh": { read: "trư (uốn lưỡi)" },
+      "ch": { read: "chư (uốn lưỡi, bật hơi)" },
+      "sh": { read: "sư (uốn lưỡi)" },
+      "r": { read: "rư (lưỡi chạm răng khe răng trên dưới, mồm kéo dài)" },
+      "z": { read: "trư (lưỡi chạm răng khe răng trên dưới, mồm kéo dài)" },
+      "c": { read: "trư (lưỡi chạm răng khe răng trên dưới, mồm kéo dài, bật hơi)" },
+      "s": { read: "sư (lưỡi chạm răng khe răng trên dưới, mồm kéo dài)" },
+      "y": { read: "i" },
+      "w": { read: "u" }
+    };
 
-    const vanMau = [
-      // Vận mẫu đơn (6)
-      "a", "o", "e", "i", "u", "ü",
+    const vanMauData = {
+      // Vận mẫu đơn
+      "a": { read: "a", standalone: "a" },
+      "o": { read: "ô", standalone: "o" },
+      "e": { read: "ưa", standalone: "e" },
+      "i": { read: "i", standalone: "yi" },
+      "u": { read: "u", standalone: "wu" },
+      "ü": { read: "uy", standalone: "yu" },
 
-      // Vận mẫu kép (13)
-      "ai", "ei", "ao", "ou",
-      "ia", "ie", "ua", "uo", "üe",
-      "iao", "iou (iu)", "uai", "uei (ui)",
+      // Vận mẫu kép
+      "ai": { read: "ai", standalone: "ai" },
+      "ei": { read: "ây", standalone: "ei" },
+      "ao": { read: "ao", standalone: "ao" },
+      "ou": { read: "âu", standalone: "ou" },
+      "ia": { read: "ia", standalone: "ya" },
+      "ie": { read: "iê", standalone: "ye" },
+      "ua": { read: "oa", standalone: "wa" },
+      "uo": { read: "uô", standalone: "wo" },
+      "üe": { read: "uyê", standalone: "yue" },
+      "iao": { read: "ieo", standalone: "yao" },
+      "iou (iu)": { read: "iêu", standalone: "you" },
+      "uai": { read: "oai", standalone: "wai" },
+      "uei (ui)": { read: "uôi", standalone: "wei" },
 
-      // Vận mẫu mũi (16)
-      "an", "en", "in", "ün",
-      "ian", "uan", "üan", "uen (un)",
-      "ang", "eng", "ing", "ong",
-      "iang", "uang", "iong", "ueng",
+      // Vận mẫu mũi
+      "an": { read: "an", standalone: "an" },
+      "en": { read: "ân", standalone: "en" },
+      "in": { read: "in", standalone: "yin" },
+      "ün": { read: "uyn", standalone: "yun" },
+      "ian": { read: "ien", standalone: "yan" },
+      "uan": { read: "oan", standalone: "wan" },
+      "üan": { read: "uyen", standalone: "yuan" },
+      "uen (un)": { read: "uân", standalone: "wen" },
+      "ang": { read: "ang", standalone: "ang" },
+      "eng": { read: "âng", standalone: "eng" },
+      "ing": { read: "inh", standalone: "ying" },
+      "ong": { read: "ung", standalone: "weng" },
+      "iang": { read: "iang", standalone: "yang" },
+      "uang": { read: "oang", standalone: "wang" },
+      "iong": { read: "iung", standalone: "yong" },
+      "ueng": { read: "oâng", standalone: "weng" },
 
-      // Vận mẫu đặc biệt (1)
-      "er"
-    ];
+      // Vận mẫu đặc biệt
+      "er": { read: "ơ (uốn lưỡi)", standalone: "er" }
+    };
+
+    const thanhMau = Object.keys(thanhMauData);
+    const vanMau = Object.keys(vanMauData);
 
     let currentMode = 'thanhMau';
     let activeList = [...thanhMau];
+    let selectedItemKey = null;
+    let isPronunciationVisible = false;
 
     // ==============================
     // DOM ELEMENTS
@@ -121,6 +187,9 @@
     const result = document.getElementById("result");
     const nameList = document.getElementById("nameList");
     const itemCount = document.getElementById("itemCount");
+    const pronunciationText = document.getElementById("pronunciationText");
+    const standaloneText = document.getElementById("standaloneText");
+    const eyeIcon = document.getElementById("eyeIcon");
 
     const modeThanhMauBtn = document.getElementById("modeThanhMau");
     const modeVanMauBtn = document.getElementById("modeVanMau");
@@ -132,7 +201,6 @@
     function changeMode(mode) {
       currentMode = mode;
 
-      // Update danh sách hoạt động
       if (mode === 'thanhMau') {
         activeList = [...thanhMau];
       } else if (mode === 'vanMau') {
@@ -141,11 +209,8 @@
         activeList = [...thanhMau, ...vanMau];
       }
 
-      // Cập nhật giao diện Nút chọn
       updateButtonStyles();
-
-      // Reset kết quả & render lại danh sách
-      result.textContent = "?";
+      resetResult();
       renderList();
     }
 
@@ -158,6 +223,13 @@
       modeAllBtn.className = `py-2 px-3 rounded-lg text-sm font-bold transition-all ${currentMode === 'all' ? activeClass : inactiveClass}`;
     }
 
+    function resetResult() {
+      result.textContent = "?";
+      selectedItemKey = null;
+      hidePronunciation();
+      updateStandaloneDisplay();
+    }
+
     // ==============================
     // HIỂN THỊ DANH SÁCH
     // ==============================
@@ -165,7 +237,7 @@
       nameList.innerHTML = "";
       itemCount.textContent = `${activeList.length} từ`;
 
-      activeList.forEach((itemText, index) => {
+      activeList.forEach((itemText) => {
         const item = document.createElement("div");
         item.className = `
           p-2
@@ -194,16 +266,73 @@
         return;
       }
 
+      hidePronunciation();
+
       const randomIndex = Math.floor(Math.random() * activeList.length);
-      const selectedItem = activeList[randomIndex];
+      selectedItemKey = activeList[randomIndex];
 
-      result.textContent = selectedItem;
+      result.textContent = selectedItemKey;
 
-      // Hiệu ứng nảy
+      // Cập nhật thông tin đứng độc lập ngay lập tức
+      updateStandaloneDisplay();
+
       result.classList.add("scale-110");
       setTimeout(() => {
         result.classList.remove("scale-110");
       }, 150);
+    }
+
+    // Hiển thị thông tin Standalone luôn luôn khi có dữ liệu
+    function updateStandaloneDisplay() {
+      if (!selectedItemKey) {
+        standaloneText.classList.add("hidden");
+        standaloneText.textContent = "";
+        return;
+      }
+
+      const itemData = thanhMauData[selectedItemKey] || vanMauData[selectedItemKey];
+
+      if (itemData && itemData.standalone) {
+        standaloneText.textContent = `📝 Đứng độc lập: ${itemData.standalone}`;
+        standaloneText.classList.remove("hidden");
+      } else {
+        standaloneText.classList.add("hidden");
+        standaloneText.textContent = "";
+      }
+    }
+
+    // ==============================
+    // CÁCH ĐỌC & EYE ICON (TOGGLE CÁCH ĐỌC ONLY)
+    // ==============================
+    function togglePronunciation() {
+      if (!selectedItemKey) return;
+
+      if (isPronunciationVisible) {
+        hidePronunciation();
+      } else {
+        showPronunciation();
+      }
+    }
+
+    function showPronunciation() {
+      if (!selectedItemKey) return;
+      
+      const itemData = thanhMauData[selectedItemKey] || vanMauData[selectedItemKey];
+
+      if (itemData && itemData.read) {
+        pronunciationText.textContent = `🗣️ Đọc: ${itemData.read}`;
+        pronunciationText.classList.remove("hidden");
+        eyeIcon.className = "fa-solid fa-eye-slash";
+        isPronunciationVisible = true;
+      }
+    }
+
+    function hidePronunciation() {
+      pronunciationText.classList.add("hidden");
+      pronunciationText.textContent = "";
+      
+      eyeIcon.className = "fa-solid fa-eye";
+      isPronunciationVisible = false;
     }
 
     // Khởi tạo danh sách ban đầu
