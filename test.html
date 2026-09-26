@@ -5,13 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Random Name</title>
+  <title>Học Pinyin Tiếng Trung</title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+<body class="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center py-8">
 
   <div class="w-full max-w-xl mx-4">
 
@@ -19,25 +19,39 @@
     <div class="bg-white rounded-3xl shadow-2xl p-8">
 
       <!-- Title -->
-      <div class="text-center mb-8">
+      <div class="text-center mb-6">
         <h1 class="text-4xl font-bold text-gray-800">
-          🎲 Random Name
+          🎲 Luyện Pinyin Tiếng Trung
         </h1>
 
         <p class="text-gray-500 mt-2">
-          Nhấn nút để chọn một người ngẫu nhiên
+          Chọn chế độ ôn tập và nhấn nút để tạo ngẫu nhiên
         </p>
       </div>
 
+      <!-- Mode Selector -->
+      <div class="mb-6">
+        <label class="block text-sm font-semibold text-gray-700 mb-2 text-center">Chế độ ôn tập:</label>
+        <div class="grid grid-cols-3 gap-2 p-1 bg-gray-100 rounded-xl">
+          <button id="modeThanhMau" onclick="changeMode('thanhMau')" class="py-2 px-3 rounded-lg text-sm font-bold transition-all bg-indigo-600 text-white shadow">
+            Thanh Mẫu
+          </button>
+          <button id="modeVanMau" onclick="changeMode('vanMau')" class="py-2 px-3 rounded-lg text-sm font-bold transition-all text-gray-600 hover:text-indigo-600">
+            Vận Mẫu
+          </button>
+          <button id="modeAll" onclick="changeMode('all')" class="py-2 px-3 rounded-lg text-sm font-bold transition-all text-gray-600 hover:text-indigo-600">
+            Tất Cả
+          </button>
+        </div>
+      </div>
 
       <!-- Result -->
       <div id="result" class="h-32 flex items-center justify-center
                bg-indigo-50 border-4 border-indigo-500
                rounded-2xl mb-6
-               text-4xl font-bold text-indigo-600">
+               text-5xl font-extrabold text-indigo-600 transition-all duration-200">
         ?
       </div>
-
 
       <!-- Button -->
       <button id="randomButton" onclick="randomName()" class="w-full py-4 px-6
@@ -50,179 +64,150 @@
         🎯 Chọn ngẫu nhiên
       </button>
 
-
       <!-- Name List -->
-      <!-- <div class="mt-8">
-
-        <h2 class="text-xl font-bold text-gray-700 mb-4">
-          👥 Danh sách
+      <div class="mt-8">
+        <h2 class="text-xl font-bold text-gray-700 mb-4 flex justify-between items-center">
+          <span>👥 Danh sách ôn tập</span>
+          <span id="itemCount" class="text-sm font-normal text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full"></span>
         </h2>
 
-        <div
-          id="nameList"
-          class="grid grid-cols-2 gap-3"
-        >
+        <div id="nameList" class="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto p-1 border rounded-xl">
         </div>
-
-      </div> -->
+      </div>
 
     </div>
 
   </div>
 
-
   <script>
-
     // ==============================
-    // DANH SÁCH TÊN
+    // DANH SÁCH DỮ LIỆU
     // ==============================
     const thanhMau = [
-      "b",
-      "p",
-      "m",
-      "f",
-
-      "d",
-      "t",
-      "n",
-      "l",
-
-      "g",
-      "k",
-      "h",
-
-      "j",
-      "q",
-      "x",
-
-      "zh",
-      "ch",
-      "sh",
-      "r",
-
-      "z",
-      "c",
-      "s"
+      "b", "p", "m", "f",
+      "d", "t", "n", "l",
+      "g", "k", "h",
+      "j", "q", "x",
+      "zh", "ch", "sh", "r",
+      "z", "c", "s",
+      "y", "w"
     ];
-
-
-    // ==============================
-    // VẬN MẪU (韵母)
-    // ==============================
 
     const vanMau = [
-      "a",
-      "o",
-      "e",
-      "i",
-      "u",
-      "ü",
+      // Vận mẫu đơn (6)
+      "a", "o", "e", "i", "u", "ü",
 
-      "ai",
-      "ei",
-      "ui",
+      // Vận mẫu kép (13)
+      "ai", "ei", "ao", "ou",
+      "ia", "ie", "ua", "uo", "üe",
+      "iao", "iou (iu)", "uai", "uei (ui)",
 
-      "ao",
-      "ou",
-      "iu",
+      // Vận mẫu mũi (16)
+      "an", "en", "in", "ün",
+      "ian", "uan", "üan", "uen (un)",
+      "ang", "eng", "ing", "ong",
+      "iang", "uang", "iong", "ueng",
 
-      "ie",
-      "üe",
-
-      "er",
-
-      "an",
-      "en",
-      "in",
-      "un",
-      "ün",
-
-      "ang",
-      "eng",
-      "ing",
-      "ong"
+      // Vận mẫu đặc biệt (1)
+      "er"
     ];
 
-    const names = [...thanhMau];
-
-
+    let currentMode = 'thanhMau';
+    let activeList = [...thanhMau];
 
     // ==============================
-    // DOM ELEMENT
+    // DOM ELEMENTS
     // ==============================
-
     const result = document.getElementById("result");
-
     const nameList = document.getElementById("nameList");
+    const itemCount = document.getElementById("itemCount");
 
-    const randomButton = document.getElementById("randomButton");
+    const modeThanhMauBtn = document.getElementById("modeThanhMau");
+    const modeVanMauBtn = document.getElementById("modeVanMau");
+    const modeAllBtn = document.getElementById("modeAll");
 
+    // ==============================
+    // THAY ĐỔI CHẾ ĐỘ
+    // ==============================
+    function changeMode(mode) {
+      currentMode = mode;
+
+      // Update danh sách hoạt động
+      if (mode === 'thanhMau') {
+        activeList = [...thanhMau];
+      } else if (mode === 'vanMau') {
+        activeList = [...vanMau];
+      } else {
+        activeList = [...thanhMau, ...vanMau];
+      }
+
+      // Cập nhật giao diện Nút chọn
+      updateButtonStyles();
+
+      // Reset kết quả & render lại danh sách
+      result.textContent = "?";
+      renderList();
+    }
+
+    function updateButtonStyles() {
+      const activeClass = "bg-indigo-600 text-white shadow";
+      const inactiveClass = "text-gray-600 hover:text-indigo-600 bg-transparent";
+
+      modeThanhMauBtn.className = `py-2 px-3 rounded-lg text-sm font-bold transition-all ${currentMode === 'thanhMau' ? activeClass : inactiveClass}`;
+      modeVanMauBtn.className = `py-2 px-3 rounded-lg text-sm font-bold transition-all ${currentMode === 'vanMau' ? activeClass : inactiveClass}`;
+      modeAllBtn.className = `py-2 px-3 rounded-lg text-sm font-bold transition-all ${currentMode === 'all' ? activeClass : inactiveClass}`;
+    }
 
     // ==============================
     // HIỂN THỊ DANH SÁCH
     // ==============================
+    function renderList() {
+      nameList.innerHTML = "";
+      itemCount.textContent = `${activeList.length} từ`;
 
-    names.forEach((name, index) => {
-
-      const item = document.createElement("div");
-
-      item.className = `
-        p-3
-        bg-gray-100
-        rounded-lg
-        text-gray-700
-        font-medium
-        text-center
-        hover:bg-indigo-100
-        hover:text-indigo-600
-        transition
-      `;
-
-      item.textContent = `${index + 1}. ${name}`;
-
-      nameList.appendChild(item);
-
-    });
-
+      activeList.forEach((itemText, index) => {
+        const item = document.createElement("div");
+        item.className = `
+          p-2
+          bg-gray-50
+          border border-gray-100
+          rounded-lg
+          text-gray-700
+          font-medium
+          text-center
+          hover:bg-indigo-100
+          hover:text-indigo-600
+          transition
+          text-sm
+        `;
+        item.textContent = itemText;
+        nameList.appendChild(item);
+      });
+    }
 
     // ==============================
-    // RANDOM NAME
+    // RANDOM ITEM
     // ==============================
-
     function randomName() {
-
-      // Không có tên
-      if (names.length === 0) {
-        result.textContent = "Không có tên";
+      if (activeList.length === 0) {
+        result.textContent = "Trống";
         return;
       }
 
+      const randomIndex = Math.floor(Math.random() * activeList.length);
+      const selectedItem = activeList[randomIndex];
 
-      // Random index
-      const randomIndex = Math.floor(
-        Math.random() * names.length
-      );
+      result.textContent = selectedItem;
 
-
-      // Lấy tên
-      const selectedName = names[randomIndex];
-
-
-      // Hiển thị
-      result.textContent = selectedName;
-
-
-      // Hiệu ứng
+      // Hiệu ứng nảy
       result.classList.add("scale-110");
-
       setTimeout(() => {
-
         result.classList.remove("scale-110");
-
-      }, 200);
-
+      }, 150);
     }
 
+    // Khởi tạo danh sách ban đầu
+    renderList();
   </script>
 
 </body>
