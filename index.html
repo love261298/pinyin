@@ -44,9 +44,13 @@
             class="py-2 px-3 rounded-lg text-sm font-bold transition-all text-gray-600 hover:text-indigo-600">
             Vận Mẫu
           </button>
-          <button id="modeAll" onclick="changeMode('all')"
+          <button id="modeBoThu" onclick="changeMode('boThu')"
             class="py-2 px-3 rounded-lg text-sm font-bold transition-all text-gray-600 hover:text-indigo-600">
-            Tất Cả
+            214 Bộ Thủ
+          </button>
+          <button id="modeVocabulary" onclick="changeMode('vocabulary')"
+            class="py-2 px-3 rounded-lg text-sm font-bold transition-all text-gray-600 hover:text-indigo-600">
+            2500 Từ
           </button>
         </div>
       </div>
@@ -194,8 +198,237 @@
       "er": { read: "ơ (uốn lưỡi)", standalone: "er" }
     };
 
+    const boThuData = {
+      "一": { pinyin: "yī", meaning: "một, nhất" },
+      "丨": { pinyin: "gǔn", meaning: "nét sổ" },
+      "丶": { pinyin: "diǎn", meaning: "chấm" },
+      "丿": { pinyin: "piě", meaning: "nét phẩy" },
+      "乙": { pinyin: "yǐ", meaning: "ất, nét cong" },
+      "亅": { pinyin: "jué", meaning: "nét móc" },
+      "二": { pinyin: "èr", meaning: "hai" },
+      "亠": { pinyin: "tóu", meaning: "đầu" },
+      "人": { pinyin: "rén", meaning: "người" },
+      "儿": { pinyin: "ér", meaning: "người, chân người" },
+      "入": { pinyin: "rù", meaning: "vào" },
+      "八": { pinyin: "bā", meaning: "tám, chia ra" },
+      "冂": { pinyin: "jiōng", meaning: "vùng đất ở ngoài thành" },
+      "冖": { pinyin: "mì", meaning: "khăn che, mái che" },
+      "冫": { pinyin: "bīng", meaning: "băng, nước đá" },
+      "几": { pinyin: "jī", meaning: "ghế nhỏ, bàn nhỏ" },
+      "凵": { pinyin: "kǎn", meaning: "miệng hộp, vật chứa" },
+      "刀": { pinyin: "dāo", meaning: "dao" },
+      "力": { pinyin: "lì", meaning: "sức lực" },
+      "勹": { pinyin: "bāo", meaning: "bao bọc" },
+      "匕": { pinyin: "bǐ", meaning: "cái thìa, dao găm" },
+      "匚": { pinyin: "fāng", meaning: "hộp, tủ" },
+      "匸": { pinyin: "xǐ", meaning: "che giấu" },
+      "十": { pinyin: "shí", meaning: "mười" },
+      "卜": { pinyin: "bǔ", meaning: "bói toán" },
+      "卩": { pinyin: "jié", meaning: "đốt tre, tiết" },
+      "厂": { pinyin: "hǎn", meaning: "vách núi, sườn núi" },
+      "厶": { pinyin: "sī", meaning: "riêng tư" },
+      "又": { pinyin: "yòu", meaning: "lại, một lần nữa" },
+
+      "口": { pinyin: "kǒu", meaning: "miệng" },
+      "囗": { pinyin: "wéi", meaning: "vây quanh" },
+      "土": { pinyin: "tǔ", meaning: "đất" },
+      "士": { pinyin: "shì", meaning: "kẻ sĩ" },
+      "夂": { pinyin: "zhǐ", meaning: "đi chậm, bước chân" },
+      "夊": { pinyin: "suī", meaning: "đi chậm" },
+      "夕": { pinyin: "xī", meaning: "buổi tối" },
+      "大": { pinyin: "dà", meaning: "lớn" },
+      "女": { pinyin: "nǚ", meaning: "phụ nữ" },
+      "子": { pinyin: "zǐ", meaning: "con, trẻ em" },
+      "宀": { pinyin: "mián", meaning: "mái nhà" },
+      "寸": { pinyin: "cùn", meaning: "tấc, đơn vị đo" },
+      "小": { pinyin: "xiǎo", meaning: "nhỏ" },
+      "尢": { pinyin: "yóu", meaning: "yếu, què" },
+      "尸": { pinyin: "shī", meaning: "xác chết, thân thể" },
+      "屮": { pinyin: "chè", meaning: "mầm cây" },
+      "山": { pinyin: "shān", meaning: "núi" },
+      "巛": { pinyin: "chuān", meaning: "sông" },
+      "工": { pinyin: "gōng", meaning: "công việc" },
+      "己": { pinyin: "jǐ", meaning: "bản thân" },
+      "巾": { pinyin: "jīn", meaning: "khăn" },
+      "干": { pinyin: "gān", meaning: "khô, can" },
+      "幺": { pinyin: "yāo", meaning: "nhỏ, bé" },
+      "广": { pinyin: "guǎng", meaning: "mái nhà, vách nhà" },
+      "廴": { pinyin: "yǐn", meaning: "bước dài" },
+      "廾": { pinyin: "gǒng", meaning: "hai tay chắp lại" },
+      "弋": { pinyin: "yì", meaning: "bắn, cọc" },
+      "弓": { pinyin: "gōng", meaning: "cung" },
+      "彐": { pinyin: "jì", meaning: "đầu con lợn" },
+      "彡": { pinyin: "shān", meaning: "lông, tóc" },
+      "彳": { pinyin: "chì", meaning: "bước chân trái" },
+      "心": { pinyin: "xīn", meaning: "tim, lòng, tâm" },
+      "戈": { pinyin: "gē", meaning: "qua, giáo" },
+      "戶": { pinyin: "hù", meaning: "cửa" },
+      "手": { pinyin: "shǒu", meaning: "tay" },
+      "支": { pinyin: "zhī", meaning: "cành, nhánh" },
+      "攴": { pinyin: "pū", meaning: "đánh, gõ" },
+      "文": { pinyin: "wén", meaning: "văn, chữ viết" },
+      "斗": { pinyin: "dǒu", meaning: "cái đấu" },
+      "斤": { pinyin: "jīn", meaning: "cái rìu, cân" },
+      "方": { pinyin: "fāng", meaning: "phương, hướng" },
+      "无": { pinyin: "wú", meaning: "không" },
+      "日": { pinyin: "rì", meaning: "mặt trời, ngày" },
+      "曰": { pinyin: "yuē", meaning: "nói rằng" },
+      "月": { pinyin: "yuè", meaning: "mặt trăng, tháng" },
+      "木": { pinyin: "mù", meaning: "cây, gỗ" },
+      "欠": { pinyin: "qiàn", meaning: "thiếu, ngáp" },
+      "止": { pinyin: "zhǐ", meaning: "dừng lại" },
+      "歹": { pinyin: "dǎi", meaning: "xấu, chết" },
+      "殳": { pinyin: "shū", meaning: "binh khí" },
+      "毋": { pinyin: "wú", meaning: "chớ, không" },
+      "比": { pinyin: "bǐ", meaning: "so sánh" },
+      "毛": { pinyin: "máo", meaning: "lông" },
+      "氏": { pinyin: "shì", meaning: "họ, thị tộc" },
+      "气": { pinyin: "qì", meaning: "hơi, khí" },
+      "水": { pinyin: "shuǐ", meaning: "nước" },
+      "火": { pinyin: "huǒ", meaning: "lửa" },
+      "爪": { pinyin: "zhǎo", meaning: "móng vuốt" },
+      "父": { pinyin: "fù", meaning: "cha" },
+      "爻": { pinyin: "yáo", meaning: "hào, vạch quẻ" },
+      "爿": { pinyin: "qiáng", meaning: "mảnh gỗ" },
+      "片": { pinyin: "piàn", meaning: "mảnh, tấm" },
+      "牙": { pinyin: "yá", meaning: "răng" },
+      "牛": { pinyin: "niú", meaning: "trâu, bò" },
+      "犬": { pinyin: "quǎn", meaning: "chó" },
+
+      "玄": { pinyin: "xuán", meaning: "đen huyền, huyền bí" },
+      "玉": { pinyin: "yù", meaning: "ngọc" },
+      "瓜": { pinyin: "guā", meaning: "dưa" },
+      "瓦": { pinyin: "wǎ", meaning: "ngói" },
+      "甘": { pinyin: "gān", meaning: "ngọt" },
+      "生": { pinyin: "shēng", meaning: "sinh, sống" },
+      "用": { pinyin: "yòng", meaning: "dùng" },
+      "田": { pinyin: "tián", meaning: "ruộng" },
+      "疋": { pinyin: "pǐ", meaning: "cuộn vải, chân" },
+      "疒": { pinyin: "nè", meaning: "bệnh" },
+      "癶": { pinyin: "bō", meaning: "bàn chân, bước chân" },
+      "白": { pinyin: "bái", meaning: "trắng" },
+      "皮": { pinyin: "pí", meaning: "da" },
+      "皿": { pinyin: "mǐn", meaning: "đồ đựng" },
+      "目": { pinyin: "mù", meaning: "mắt" },
+      "矛": { pinyin: "máo", meaning: "mâu, giáo" },
+      "矢": { pinyin: "shǐ", meaning: "mũi tên" },
+      "石": { pinyin: "shí", meaning: "đá" },
+      "示": { pinyin: "shì", meaning: "chỉ thị, thần linh" },
+      "禸": { pinyin: "róu", meaning: "dấu chân thú" },
+      "禾": { pinyin: "hé", meaning: "lúa" },
+      "穴": { pinyin: "xué", meaning: "hang, huyệt" },
+      "立": { pinyin: "lì", meaning: "đứng" },
+
+      "竹": { pinyin: "zhú", meaning: "tre, trúc" },
+      "米": { pinyin: "mǐ", meaning: "gạo" },
+      "糸": { pinyin: "mì", meaning: "sợi tơ" },
+      "缶": { pinyin: "fǒu", meaning: "chum, vò" },
+      "网": { pinyin: "wǎng", meaning: "lưới" },
+      "羊": { pinyin: "yáng", meaning: "dê, cừu" },
+      "羽": { pinyin: "yǔ", meaning: "lông vũ" },
+      "老": { pinyin: "lǎo", meaning: "già" },
+      "而": { pinyin: "ér", meaning: "mà, và" },
+      "耒": { pinyin: "lěi", meaning: "cái cày" },
+      "耳": { pinyin: "ěr", meaning: "tai" },
+      "聿": { pinyin: "yù", meaning: "bút" },
+      "肉": { pinyin: "ròu", meaning: "thịt" },
+      "臣": { pinyin: "chén", meaning: "bề tôi" },
+      "自": { pinyin: "zì", meaning: "tự, chính mình" },
+      "至": { pinyin: "zhì", meaning: "đến" },
+      "臼": { pinyin: "jiù", meaning: "cối giã" },
+      "舌": { pinyin: "shé", meaning: "lưỡi" },
+      "舛": { pinyin: "chuǎn", meaning: "sai, trái ngược" },
+      "舟": { pinyin: "zhōu", meaning: "thuyền" },
+      "艮": { pinyin: "gèn", meaning: "dừng, cứng" },
+      "色": { pinyin: "sè", meaning: "màu sắc" },
+      "艸": { pinyin: "cǎo", meaning: "cỏ" },
+      "虍": { pinyin: "hū", meaning: "vằn hổ" },
+      "虫": { pinyin: "chóng", meaning: "sâu, côn trùng" },
+      "血": { pinyin: "xuè", meaning: "máu" },
+      "行": { pinyin: "xíng", meaning: "đi, hàng" },
+      "衣": { pinyin: "yī", meaning: "áo, quần áo" },
+      "襾": { pinyin: "yà", meaning: "che phủ" },
+
+      "見": { pinyin: "jiàn", meaning: "thấy, nhìn" },
+      "角": { pinyin: "jiǎo", meaning: "sừng, góc" },
+      "言": { pinyin: "yán", meaning: "lời nói" },
+      "谷": { pinyin: "gǔ", meaning: "thung lũng" },
+      "豆": { pinyin: "dòu", meaning: "đậu" },
+      "豕": { pinyin: "shǐ", meaning: "lợn" },
+      "豸": { pinyin: "zhì", meaning: "loài thú không chân rõ ràng" },
+      "貝": { pinyin: "bèi", meaning: "vỏ sò, tiền" },
+      "赤": { pinyin: "chì", meaning: "đỏ" },
+      "走": { pinyin: "zǒu", meaning: "đi, chạy" },
+      "足": { pinyin: "zú", meaning: "chân, đủ" },
+      "身": { pinyin: "shēn", meaning: "thân thể" },
+      "車": { pinyin: "chē", meaning: "xe" },
+      "辛": { pinyin: "xīn", meaning: "cay, đắng" },
+      "辰": { pinyin: "chén", meaning: "thời gian, sao Thìn" },
+      "辵": { pinyin: "chuò", meaning: "đi, bước đi" },
+      "邑": { pinyin: "yì", meaning: "thành, ấp" },
+      "酉": { pinyin: "yǒu", meaning: "rượu, dậu" },
+      "釆": { pinyin: "biàn", meaning: "phân biệt" },
+      "里": { pinyin: "lǐ", meaning: "làng, bên trong" },
+
+      "金": { pinyin: "jīn", meaning: "kim loại, vàng" },
+      "長": { pinyin: "cháng", meaning: "dài, trưởng" },
+      "門": { pinyin: "mén", meaning: "cửa" },
+      "阜": { pinyin: "fù", meaning: "gò đất, đồi" },
+      "隶": { pinyin: "lì", meaning: "nô lệ, thuộc về" },
+      "隹": { pinyin: "zhuī", meaning: "chim đuôi ngắn" },
+      "雨": { pinyin: "yǔ", meaning: "mưa" },
+      "靑": { pinyin: "qīng", meaning: "xanh" },
+      "非": { pinyin: "fēi", meaning: "không, sai" },
+      "面": { pinyin: "miàn", meaning: "mặt" },
+      "革": { pinyin: "gé", meaning: "da thuộc" },
+      "韋": { pinyin: "wéi", meaning: "da thuộc đã xử lý" },
+      "韭": { pinyin: "jiǔ", meaning: "hẹ" },
+      "音": { pinyin: "yīn", meaning: "âm thanh" },
+      "頁": { pinyin: "yè", meaning: "đầu, trang" },
+      "風": { pinyin: "fēng", meaning: "gió" },
+      "飛": { pinyin: "fēi", meaning: "bay" },
+      "食": { pinyin: "shí", meaning: "ăn, thức ăn" },
+      "首": { pinyin: "shǒu", meaning: "đầu" },
+      "香": { pinyin: "xiāng", meaning: "thơm, hương" },
+
+      "馬": { pinyin: "mǎ", meaning: "ngựa" },
+      "骨": { pinyin: "gǔ", meaning: "xương" },
+      "高": { pinyin: "gāo", meaning: "cao" },
+      "髟": { pinyin: "biāo", meaning: "tóc dài" },
+      "鬥": { pinyin: "dòu", meaning: "đấu, đánh nhau" },
+      "鬯": { pinyin: "chàng", meaning: "rượu thơm" },
+      "鬲": { pinyin: "gé", meaning: "nồi, cách ngăn" },
+      "鬼": { pinyin: "guǐ", meaning: "ma, quỷ" },
+      "魚": { pinyin: "yú", meaning: "cá" },
+      "鳥": { pinyin: "niǎo", meaning: "chim" },
+      "鹵": { pinyin: "lǔ", meaning: "muối, đất mặn" },
+      "鹿": { pinyin: "lù", meaning: "hươu" },
+      "麥": { pinyin: "mài", meaning: "lúa mạch" },
+      "麻": { pinyin: "má", meaning: "cây gai" },
+      "黃": { pinyin: "huáng", meaning: "vàng" },
+      "黍": { pinyin: "shǔ", meaning: "kê" },
+      "黑": { pinyin: "hēi", meaning: "đen" },
+      "黹": { pinyin: "zhǐ", meaning: "thêu thùa" },
+      "黽": { pinyin: "mǐn", meaning: "ếch, cóc" },
+      "鼎": { pinyin: "dǐng", meaning: "đỉnh, vạc ba chân" },
+      "鼓": { pinyin: "gǔ", meaning: "trống" },
+      "鼠": { pinyin: "shǔ", meaning: "chuột" },
+      "鼻": { pinyin: "bí", meaning: "mũi" },
+      "齊": { pinyin: "qí", meaning: "đều, ngang bằng" },
+      "齒": { pinyin: "chǐ", meaning: "răng" },
+      "龍": { pinyin: "lóng", meaning: "rồng" },
+      "龜": { pinyin: "guī", meaning: "rùa" },
+      "龠": { pinyin: "yuè", meaning: "sáo, ống sáo" }
+    };
+
+    const vocabularyData = {
+
+    }
+
     const thanhMau = Object.keys(thanhMauData);
     const vanMau = Object.keys(vanMauData);
+    const boThu = Object.keys(boThuData);
+    const vocabulary = Object.keys(vocabularyData);
 
     let currentMode = 'thanhMau';
     let activeList = [...thanhMau];
@@ -214,7 +447,8 @@
 
     const modeThanhMauBtn = document.getElementById("modeThanhMau");
     const modeVanMauBtn = document.getElementById("modeVanMau");
-    const modeAllBtn = document.getElementById("modeAll");
+    const modeBoThuBtn = document.getElementById("modeBoThu");
+    const modeVocabularyBtn = document.getElementById("modeVocabulary");
 
     // ==============================
     // THAY ĐỔI CHẾ ĐỘ
@@ -226,8 +460,10 @@
         activeList = [...thanhMau];
       } else if (mode === 'vanMau') {
         activeList = [...vanMau];
-      } else {
-        activeList = [...thanhMau, ...vanMau];
+      } else if (mode === 'boThu') {
+        activeList = [...boThu];
+      } else if (mode === 'vocabulary'){
+        activeList = [...vocabulary];
       }
 
       updateButtonStyles();
@@ -241,7 +477,8 @@
 
       modeThanhMauBtn.className = `py-2 px-3 rounded-lg text-sm font-bold transition-all ${currentMode === 'thanhMau' ? activeClass : inactiveClass}`;
       modeVanMauBtn.className = `py-2 px-3 rounded-lg text-sm font-bold transition-all ${currentMode === 'vanMau' ? activeClass : inactiveClass}`;
-      modeAllBtn.className = `py-2 px-3 rounded-lg text-sm font-bold transition-all ${currentMode === 'all' ? activeClass : inactiveClass}`;
+      modeBoThuBtn.className = `py-2 px-3 rounded-lg text-sm font-bold transition-all ${currentMode === 'boThu' ? activeClass : inactiveClass}`;
+      modeVocabularyBtn.className = `py-2 px-3 rounded-lg text-sm font-bold transition-all ${currentMode === 'vocabulary' ? activeClass : inactiveClass}`;
     }
 
     function resetResult() {
@@ -315,7 +552,6 @@
       selectItem(activeList[randomIndex]);
     }
 
-    // Hiển thị thông tin Standalone luôn luôn khi có dữ liệu
     function updateStandaloneDisplay() {
       if (!selectedItemKey) {
         standaloneText.classList.add("hidden");
@@ -323,10 +559,16 @@
         return;
       }
 
-      const itemData = thanhMauData[selectedItemKey] || vanMauData[selectedItemKey];
+      const itemData =
+        thanhMauData[selectedItemKey] ||
+        vanMauData[selectedItemKey] ||
+        boThuData[selectedItemKey];
 
       if (itemData && itemData.standalone) {
         standaloneText.textContent = `📝 Đứng độc lập: ${itemData.standalone}`;
+        standaloneText.classList.remove("hidden");
+      } else if (itemData && itemData.meaning) {
+        standaloneText.textContent = `📖 Nghĩa: ${itemData.meaning}`;
         standaloneText.classList.remove("hidden");
       } else {
         standaloneText.classList.add("hidden");
@@ -350,13 +592,26 @@
     function showPronunciation() {
       if (!selectedItemKey) return;
 
-      const itemData = thanhMauData[selectedItemKey] || vanMauData[selectedItemKey];
+      const itemData =
+        thanhMauData[selectedItemKey] ||
+        vanMauData[selectedItemKey] ||
+        boThuData[selectedItemKey];
 
-      if (itemData && itemData.read) {
-        pronunciationText.textContent = `🗣️ Đọc: ${itemData.read}`;
-        pronunciationText.classList.remove("hidden");
-        eyeIcon.className = "fa-solid fa-eye-slash";
-        isPronunciationVisible = true;
+      if (itemData) {
+        let text = "";
+
+        if (itemData.read) {
+          text = itemData.read;
+        } else if (itemData.pinyin) {
+          text = itemData.pinyin;
+        }
+
+        if (text) {
+          pronunciationText.textContent = `🗣️ Đọc: ${text}`;
+          pronunciationText.classList.remove("hidden");
+          eyeIcon.className = "fa-solid fa-eye-slash";
+          isPronunciationVisible = true;
+        }
       }
     }
 
